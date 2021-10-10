@@ -1,4 +1,4 @@
-﻿namespace mc
+﻿namespace Minsk.CodeAnalysis
 {
     public enum SyntaxKind
     {
@@ -13,6 +13,7 @@
         BadToken,
         EndOfFileToken,
         NumberExpression,
-        BinaryExpression
+        BinaryExpression,
+        ParenthesizedExpression
     }
 }

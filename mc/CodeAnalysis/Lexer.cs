@@ -1,18 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace mc
+namespace Minsk.CodeAnalysis
 {
     public class Lexer
     {
         private readonly string _text;
         private int _position;
+        private List<string> _diagnostics = new List<string>();
 
         public Lexer(string text)
         {
             _text = text;
         }
+
+        public IEnumerable<string> Diagnostics => _diagnostics;
 
         private char Current
         {
@@ -50,7 +51,9 @@ namespace mc
 
                 var length = _position - start;
                 var text = _text.Substring(start, length);
-                int.TryParse(text, out var value);
+                if (!int.TryParse(text, out var value))
+                    _diagnostics.Add($"ERROR: The number {_text} is invalid int32.");
+
                 return new SyntaxToken(SyntaxKind.NumberToken, start, text, value);
             }
 
@@ -80,6 +83,7 @@ namespace mc
             else if (Current == ')')
                 return new SyntaxToken(SyntaxKind.CloseParenthesisToken, _position++, ")", null);
 
+            _diagnostics.Add($"ERROR: bad character input: '{Current}'.");
             return new SyntaxToken(SyntaxKind.BadToken, _position++, _text.Substring(_position - 1, 1), null);
         }
     }

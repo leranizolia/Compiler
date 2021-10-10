@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace mc
+namespace Minsk.CodeAnalysis
 {
-    public class NumberExpressionSyntax : ExpressionSyntax
+    public sealed class NumberExpressionSyntax : ExpressionSyntax
     {
         public NumberExpressionSyntax(SyntaxToken numberToken)
         {
@@ -13,5 +11,10 @@ namespace mc
 
         public SyntaxToken NumberToken { get; }
         public override SyntaxKind Kind => SyntaxKind.NumberExpression;
+
+        public override IEnumerable<SyntaxNode> GetChildren()
+        {
+            yield return NumberToken; 
+        }
     }
 }
