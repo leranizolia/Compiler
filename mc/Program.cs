@@ -4,11 +4,11 @@ using System.Linq;
 
 namespace mc
 {
-    class Program
+    internal static class Program
     {
-        static void Main(string[] args)
+        private static void Main()
         {
-            bool showTree = false;
+            var showTree = false;
 
             while (true)
             {
@@ -30,14 +30,13 @@ namespace mc
                 }
 
                 var syntaxTree = SyntaxTree.Parse(line);
-                var color = Console.ForegroundColor;
 
                 if (showTree)
                 {
                     Console.ForegroundColor = ConsoleColor.DarkGray;
 
                     PrettyPrint(syntaxTree.Root);
-                    Console.ForegroundColor = color;
+                    Console.ResetColor();
                 }
 
                 if (!syntaxTree.Diagnostics.Any())
@@ -53,7 +52,7 @@ namespace mc
                     foreach (var diagnostic in syntaxTree.Diagnostics)
                         Console.WriteLine(diagnostic);
 
-                    Console.ForegroundColor = color;
+                    Console.ResetColor();
                 }
             }
         }
@@ -74,7 +73,7 @@ namespace mc
 
             Console.WriteLine();
 
-            indent += isLast ? "    " : "│   ";
+            indent += isLast ? "   " : "│   ";
 
             var lastChild = node.GetChildren().LastOrDefault();
 
