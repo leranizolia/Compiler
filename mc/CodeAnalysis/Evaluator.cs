@@ -18,10 +18,21 @@ namespace Minsk.CodeAnalysis
 
         private int EvaluateExpression(ExpressionSyntax node)
         {
-
             if (node is LiteralExpressionSyntax n)
                 return (int)n.LiteralToken.Value;
 
+            if (node is UnaryExpressionSyntax u)
+            {
+                var operand = EvaluateExpression(u.Operand);
+
+                if (u.OperatorToken.Kind == SyntaxKind.PlusToken)
+                    return operand;
+                else if (u.OperatorToken.Kind == SyntaxKind.MinusToken)
+                    return -operand;
+                else
+                    throw new Exception($"Unexpected unary operator {u.OperatorToken.Kind}.");
+            }
+                
             if (node is BinaryExpressionSyntax b)
             {
                 var left = EvaluateExpression(b.Left);
@@ -36,7 +47,7 @@ namespace Minsk.CodeAnalysis
                 else if (b.OperatorToken.Kind == SyntaxKind.SlashToken)
                     return left / right;
                 else
-                    throw new Exception($"Unexpected binary operator {b.OperatorToken.Kind}.");
+                    throw new Exception($"Unexpected binary operator {b.OperatorToken.Kind}."); 
             }
 
             if (node is ParenthesizedExpressionSyntax p)
