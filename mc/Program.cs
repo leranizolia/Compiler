@@ -1,8 +1,9 @@
 ﻿using Minsk.CodeAnalysis;
+using Minsk.CodeAnalysis.Syntax;
 using System;
 using System.Linq;
 
-namespace mc
+namespace Minsk
 {
     internal static class Program
     {
