@@ -5,6 +5,10 @@
         Addition,
         Subtraction,
         Multiplication,
-        Division
+        Division,
+        LogicalAdd,
+        LogicalOr,
+        Equals,
+        NotEquals
     }
 }

@@ -6,7 +6,7 @@ namespace Minsk.CodeAnalysis.Syntax
     {
         private readonly string _text;
         private int _position;
-        private List<string> _diagnostics = new List<string>();
+        private readonly List<string> _diagnostics = new List<string>();
 
         public Lexer(string text)
         {
@@ -15,15 +15,17 @@ namespace Minsk.CodeAnalysis.Syntax
 
         public IEnumerable<string> Diagnostics => _diagnostics;
 
-        private char Current
-        {
-            get
-            {
-                if (_position >= _text.Length)
-                    return '\0';
+        private char Current => Peek(0);
+        private char Lookahead => Peek(1);
 
-                return _text[_position];
-            }
+        private char Peek(int offset)
+        {
+            var index = _position + offset;
+
+            if (index >= _text.Length)
+                return '\0';
+
+            return _text[_position];
         }
 
         private void Next()
@@ -66,6 +68,19 @@ namespace Minsk.CodeAnalysis.Syntax
                 return new SyntaxToken(SyntaxKind.WhitespaceToken, start, text, null);
             }
 
+            if (char.IsLetter(Current))
+            {
+                var start = _position;
+
+                while (char.IsLetter(Current))
+                    Next();
+
+                var length = _position - start;
+                var text = _text.Substring(start, length);
+                var kind = SyntaxFacts.GetKeywordKind(text);
+                return new SyntaxToken(kind, start, text, null);
+            }
+
             switch (Current)
             {
                 case '+':
@@ -80,6 +95,24 @@ namespace Minsk.CodeAnalysis.Syntax
                     return new SyntaxToken(SyntaxKind.OpenParenthesisToken, _position++, "(", null);
                 case ')':
                     return new SyntaxToken(SyntaxKind.CloseParenthesisToken, _position++, ")", null);
+                case '&':
+                    if (Lookahead == '&')
+                        return new SyntaxToken(SyntaxKind.AmpersandAmpersandToken, _position += 2, "&&", null);
+                    break;
+                case '|':
+                    if (Lookahead == '|')
+                        return new SyntaxToken(SyntaxKind.PipePipeToken, _position += 2, "||", null);
+                    break;
+                case '=':
+                    if (Lookahead == '=')
+                        return new SyntaxToken(SyntaxKind.EqualsEqualsToken, _position += 2, "==", null);
+                    break;
+                case '!':
+                    if (Lookahead == '=')
+                        return new SyntaxToken(SyntaxKind.BangEqualsToken, _position += 2, "!=", null);
+                    else
+                        return new SyntaxToken(SyntaxKind.BangToken, _position++, "!", null);
+
             }
 
             _diagnostics.Add($"ERROR: bad character input: '{Current}'.");
