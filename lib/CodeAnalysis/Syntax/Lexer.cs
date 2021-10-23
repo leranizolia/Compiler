@@ -6,14 +6,14 @@ namespace Minsk.CodeAnalysis.Syntax
     {
         private readonly string _text;
         private int _position;
-        private readonly List<string> _diagnostics = new List<string>();
+        private readonly List<Diagnostic> _diagnostics = new List<Diagnostic>();
 
         public Lexer(string text)
         {
             _text = text;
         }
 
-        public IEnumerable<string> Diagnostics => _diagnostics;
+        public IEnumerable<Diagnostic> Diagnostics => _diagnostics;
 
         private char Current => Peek(0);
         private char Lookahead => Peek(1);

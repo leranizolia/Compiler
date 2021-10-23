@@ -1,8 +1,6 @@
 ﻿using Minsk.CodeAnalysis;
-using Minsk.CodeAnalysis.Binding;
 using Minsk.CodeAnalysis.Syntax;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Minsk
