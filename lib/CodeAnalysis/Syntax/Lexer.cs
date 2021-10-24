@@ -23,7 +23,7 @@
             if (index >= _text.Length)
                 return '\0';
 
-            return _text[_position];
+            return _text[index];
         }
 
         private void Next()
@@ -60,7 +60,6 @@
 
                 var length = _position - start;
                 var text = _text.Substring(start, length);
-                int.TryParse(text, out var value);
                 return new SyntaxToken(SyntaxKind.WhitespaceToken, start, text, null);
             }
 
@@ -109,7 +108,11 @@
                         _position += 2;
                         return new SyntaxToken(SyntaxKind.EqualsEqualsToken, start, "==", null);
                     }
-                    break;
+                    else
+                    {
+                        _position += 1;
+                        return new SyntaxToken(SyntaxKind.EqualsToken, start, "=", null);
+                    }
                 case '!':
                     if (Lookahead == '=')
                     {
@@ -121,7 +124,6 @@
                         _position += 1;
                         return new SyntaxToken(SyntaxKind.BangToken, start, "!", null);
                     }
-
             }
 
             _diagnostics.ReportBadCharacter(_position, Current);
