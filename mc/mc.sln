@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mc", "mc.csproj", "{1735CD8
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "lib", "..\lib\lib.csproj", "{ED915AA7-E254-4FA2-82A6-28CEE59D1835}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Minsk.Tests", "Minsk.Tests\Minsk.Tests.csproj", "{6E882B8C-FBB0-4620-86CD-945B532D99D3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{ED915AA7-E254-4FA2-82A6-28CEE59D1835}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED915AA7-E254-4FA2-82A6-28CEE59D1835}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED915AA7-E254-4FA2-82A6-28CEE59D1835}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E882B8C-FBB0-4620-86CD-945B532D99D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E882B8C-FBB0-4620-86CD-945B532D99D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E882B8C-FBB0-4620-86CD-945B532D99D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E882B8C-FBB0-4620-86CD-945B532D99D3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
