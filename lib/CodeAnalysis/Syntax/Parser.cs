@@ -87,7 +87,7 @@ namespace Minsk.CodeAnalysis.Syntax
         private ExpressionSyntax ParseBinaryExpression(int parentPrecedence = 0)
         {
             ExpressionSyntax left;
-            var unaryOperatorPrecedence = Current.Kind.GetBinaryOperatorPrecedence();
+            var unaryOperatorPrecedence = Current.Kind.GetUnaryOperatorPrecedence();
 
             if (unaryOperatorPrecedence != 0 && unaryOperatorPrecedence >= parentPrecedence)
             {
@@ -116,35 +116,36 @@ namespace Minsk.CodeAnalysis.Syntax
 
         private ExpressionSyntax ParsePrimaryExpression()
         {
+            
             switch (Current.Kind)
             {
                 case SyntaxKind.OpenParenthesisToken:
-                    {
+                {
                         var left = NextToken();
                         var expression = ParseExpression();
                         var right = MatchToken(SyntaxKind.CloseParenthesisToken);
                         return new ParenthesizedExpressionSyntax(left, expression, right);
-                    }
+                }
 
                 case SyntaxKind.FalseKeyword:
                 case SyntaxKind.TrueKeyword:
-                    {
+                { 
                         var keywordToken = NextToken();
                         var value = keywordToken.Kind == SyntaxKind.TrueKeyword;
                         return new LiteralExpressionSyntax(keywordToken, value);
-                    }
+                }
 
                 case SyntaxKind.IdentifierToken:
-                    {
+                {
                         var identifierToken = NextToken();
                         return new NameExpressionSyntax(identifierToken);
-                    }
+                }
 
-                    default:
-                    {
+                default:
+                {
                         var numberToken = MatchToken(SyntaxKind.NumberToken);
                         return new LiteralExpressionSyntax(numberToken);
-                    }
+                }
             }
         }
     }

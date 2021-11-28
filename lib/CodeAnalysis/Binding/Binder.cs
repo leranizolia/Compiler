@@ -1,15 +1,16 @@
 ﻿using Minsk.CodeAnalysis.Syntax;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Minsk.CodeAnalysis.Binding
 {
     internal sealed class Binder
     {
         private readonly DiagnosticBag _diagnostics = new DiagnosticBag();
-        private readonly Dictionary<string, object> _variables;
+        private readonly Dictionary<VariableSymbol, object> _variables;
 
-        public Binder(Dictionary<string, object> variables)
+        public Binder(Dictionary<VariableSymbol, object> variables)
         {
             _variables = variables;
         }
@@ -41,20 +42,28 @@ namespace Minsk.CodeAnalysis.Binding
         {
             var name = syntax.IdentifierToken.Text;
             var boundExpression = BindExpression(syntax.Expression);
-            return new BoundAssignmentExpression(name, boundExpression);
+
+            var existingVariable = _variables.Keys.FirstOrDefault(v => v.Name == name);
+            if (existingVariable != null)
+                _variables.Remove(existingVariable);
+
+            var variable = new VariableSymbol(name, boundExpression.Type);
+            _variables[variable] = null;
+
+            return new BoundAssignmentExpression(variable, boundExpression);
         }
 
         private BoundExpression BindNameExpression(NameExpressionSyntax syntax)
         {
             var name = syntax.IdentifierToken.Text;
-            if (!_variables.TryGetValue(name, out var value))
+            var variable = _variables.Keys.FirstOrDefault(v => v.Name == name);
+
+            if (variable == null)
             {
                 _diagnostics.ReportUndefinedName(syntax.IdentifierToken.Span, name);
                 return new BoundLiteralExpression(0);
             }
-
-            var type = value?.GetType() ?? typeof(object);
-            return new BoundVariableExpression(name, type);
+            return new BoundVariableExpression(variable);
         }
 
         private BoundExpression BindUnaryExpression(UnaryExpressionSyntax syntax)
@@ -93,62 +102,6 @@ namespace Minsk.CodeAnalysis.Binding
         private BoundExpression BindParenthesizedExpression(ParenthesizedExpressionSyntax syntax)
         {
             return BindExpression(syntax.Expression);
-        }
-
-        private BoundUnaryOperatorKind? BindUnaryOperatorKind(SyntaxKind kind, Type operandType)
-        {
-            if (operandType != typeof(int))
-            {
-                switch (kind)
-                {
-                    case SyntaxKind.PlusToken:
-                        return BoundUnaryOperatorKind.Identity;
-                    case SyntaxKind.MinusToken:
-                        return BoundUnaryOperatorKind.Negation;
-                }
-            }
-            if (operandType != typeof(bool))
-            {
-                switch (kind)
-                {
-                    case SyntaxKind.BangToken:
-                        return BoundUnaryOperatorKind.LogicalNegation;
-                }
-            }
-
-            return null;
-        }
-
-        private BoundBinaryOperatorKind? BindBinaryOperatorKind(SyntaxKind kind, Type leftType, Type rightType)
-        {
-            if (leftType == typeof(int) && rightType == typeof(int))
-            {
-                switch (kind)
-                {
-                    case SyntaxKind.PlusToken:
-                        return BoundBinaryOperatorKind.Addition;
-                    case SyntaxKind.MinusToken:
-                        return BoundBinaryOperatorKind.Subtraction;
-                    case SyntaxKind.StarToken:
-                        return BoundBinaryOperatorKind.Multiplication;
-                    case SyntaxKind.SlashToken:
-                        return BoundBinaryOperatorKind.Division;
-                    default:
-                        throw new Exception($"Unexpected binary operator {kind}");
-                }
-            }
-            if (leftType == typeof(bool) && rightType == typeof(bool))
-            {
-                switch (kind)
-                {
-                    case SyntaxKind.AmpersandAmpersandToken:
-                        return BoundBinaryOperatorKind.LogicalAdd;
-                    case SyntaxKind.PipePipeToken:
-                        return BoundBinaryOperatorKind.LogicalOr;
-                }
-            }
-
-            return null;            
         }
     } 
 }
