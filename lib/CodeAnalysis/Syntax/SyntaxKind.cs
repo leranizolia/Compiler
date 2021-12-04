@@ -17,6 +17,8 @@
         BangToken,
         AmpersandAmpersandToken,
         PipePipeToken,
+        BangEqualsToken,
+        EqualsEqualsToken,
 
         //Booleans
         TrueKeyword,
@@ -28,8 +30,6 @@
         BinaryExpression,
         ParenthesizedExpression,
         UnaryExpression,
-        EqualsEqualsToken,
-        BangEqualsToken,
         NameExpression,
         AssignmentExpression
     }
