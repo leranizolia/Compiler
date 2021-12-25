@@ -9,8 +9,8 @@ namespace Minsk.CodeAnalysis.Syntax
         {
             switch (kind)
             {
-                case SyntaxKind.StarToken:
-                case SyntaxKind.SlashToken:
+                case SyntaxKind.PlusToken:
+                case SyntaxKind.MinusToken:
                 case SyntaxKind.BangToken:
                     return 6;
 
@@ -101,6 +101,8 @@ namespace Minsk.CodeAnalysis.Syntax
                     return "||";
                 case SyntaxKind.EqualsEqualsToken:
                     return "==";
+                case SyntaxKind.BangEqualsToken:
+                    return "!=";
                 case SyntaxKind.OpenParenthesisToken:
                     return "(";
                 case SyntaxKind.CloseParenthesisToken:
